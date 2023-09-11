@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class NewCountry extends Component {
-  state = {  }
-  handleClick = () => {
+const NewCountry = () => {
+  // state = {  }
+  const {onAdd} = props;
+  const handleClick = () => {
     const name = prompt('Enter country name');
     if (name && name.trim().length > 0) {
-      this.props.onAdd(name);
+      onAdd(name);
     }
   }
-  render() { 
+  // render() { 
     return (
       <div className='newCountryButton'>
-        <button onClick={ this.handleClick }>New Country</button>
+        <button onClick={ handleClick }>New Country</button>
       </div>
     );
   }
-}
+// }
 
 export default NewCountry;

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Badge from 'react-bootstrap/Badge';
 import { DashSquare, PlusSquare } from 'react-bootstrap-icons';
 
-class Medal extends Component {
-  state = {  }
-  render() { 
-    const { medal, country, onIncrement, onDecrement } = this.props;
+const Medal = (props) => {
+  // state = {  }
+  // render() { 
+    const { medal, country, onIncrement, onDecrement } = props;
     return (
       <React.Fragment>
         <div style={{ textTransform: "capitalize"}}>
@@ -25,6 +25,6 @@ class Medal extends Component {
       </React.Fragment>
     );
   }
-}
+// }
 
 export default Medal;

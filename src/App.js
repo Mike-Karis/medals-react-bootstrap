@@ -1,7 +1,7 @@
 // Repository:  medals-b-react
 // Author:      Jeff Grissom
 // Version:     4.xx
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Badge from 'react-bootstrap/Badge';
@@ -15,86 +15,85 @@ import './App.css';
 import Form from 'react-bootstrap/Form';
 import Toast from 'react-bootstrap/Toast';
 
-class App extends Component {
-  state = {
-    countries: [
+const App = () => {
+  const [ countries, setCountries ] = useState([]);
+  useEffect(() => {
+  let fetchedCountries = [
       { id: 1, name: 'United States', gold: 2, silver: 2, bronze: 3 },
       { id: 2, name: 'China', gold: 3, silver: 1, bronze: 0 },
       { id: 3, name: 'Germany', gold: 0, silver: 2, bronze: 2 },
-    ],
-    medals: [
+    ];
+    setCountries(fetchedCountries);
+  }, []);
+    const medals = useRef([
       { id: 1, name: 'gold' },
       { id: 2, name: 'silver' },
       { id: 3, name: 'bronze' },
-    ],
-    show: false,
-    newCountryName: "",
-    showA: false
-  }
-  handleChange = (e) => this.setState({ [e.target.name]: e.target.value});
-  handleAdd = () => {
-    if (this.state.newCountryName.length > 0) {
-      const { countries } = this.state;
+    ]);
+    let show = false;
+    let newCountryName = "";
+    let showA = false;
+  // }
+  const handleChange = (e) => setCountries({ [e.target.name]: e.target.value});
+  const handleAdd = (name) => {
+    if (newCountryName.length > 0) {
       const id = countries.length === 0 ? 1 : Math.max(...countries.map(country => country.id)) + 1;
-      const mutableCountries = [...countries].concat({ id: id, name: this.state.newCountryName, gold: 0, silver: 0, bronze: 0 });
-      this.setState({ countries: mutableCountries });
-      this.toggleShowA();
-      this.handleClose();
+      setCountries([...countries].concat({ id: id, name: name, gold: 0, silver: 0, bronze: 0 }));
+      toggleShowA();
+      handleClose();
       
     }
     else{
-      this.toggleShowA();
+      toggleShowA();
     }
     // this.handleClose();
   }
-  handleDelete = (countryId) => {
-    const { countries } = this.state;
-    const mutableCountries = [...countries].filter(c => c.id !== countryId);
-    this.setState({ countries: mutableCountries });
+  const handleDelete = (countryId) => {
+    setCountries([...countries].filter(c => c.id !== countryId));
+    // const mutableCountries = [...countries].filter(c => c.id !== countryId);
+    // this.setState({ countries: mutableCountries });
   }
-  handleIncrement = (countryId, medalName) => {
-    const countries = [ ...this.state.countries ];
+  const handleIncrement = (countryId, medalName) => {
     const idx = countries.findIndex(c => c.id === countryId);
-    countries[idx][medalName] += 1;
-    this.setState({ countries: countries });
+    const mutableCountries = [...countries ];
+    mutableCountries[idx][medalName] += 1;
+    setCountries(mutableCountries);
   }
-  handleDecrement = (countryId, medalName) => {
-    const countries = [ ...this.state.countries ];
+  const handleDecrement = (countryId, medalName) => {
     const idx = countries.findIndex(c => c.id === countryId);
-    countries[idx][medalName] -= 1;
-    this.setState({ countries: countries });
+    const mutableCountries = [...countries ];
+    mutableCountries[idx][medalName] -= 1;
+    setCountries(mutableCountries);
   }
-  getAllMedalsTotal() {
+  const getAllMedalsTotal = () => {
     let sum = 0;
-    this.state.medals.forEach(medal => { sum += this.state.countries.reduce((a, b) => a + b[medal.name], 0); });
+    medals.current.forEach(medal => { sum += this.state.countries.reduce((a, b) => a + b[medal.name], 0); });
     return sum;
   }
-  handleClose = () => this.setState({ show:false });
-  handleShow = () => {
-    this.state.newCountryName = "";
-    this.setState({ show:true });
+  const handleClose = () =>  show = false;
+  const handleShow = () => {
+    newCountryName = "";
+    show = true;
   }
-  handleClose = () => {
-    this.setState({ show:false });
+  // handleClose = () => {
+  //   show = false;
+  // }
+  // handleShow = () => {
+  //   show = true;
+  // }
+  const keyPress = (e) => {
+    (e.keyCode ? e.keyCode : e.which) === '13' && handleAdd();
   }
-  handleShow = () => {
-    this.setState({ show:true });
-  }
-  keyPress = (e) => {
-    (e.keyCode ? e.keyCode : e.which) == '13' && this.handleAdd();
-  }
-  toggleShowA = () => {
-    if(this.state.showA == true){
-    this.setState({ showA:false });}
+  const toggleShowA = () => {
+    if(showA === true){
+     showA = false;}
     else{
-      this.setState({ showA:true });
+      showA = true;
     }
-  }
-
-  render() { 
+  } 
     return (
       <React.Fragment>
-        <Modal onKeyPress={ this.keyPress } show={this.state.show} onHide={this.handleClose}>
+        <Modal onKeyPress={ keyPress } show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>New Country</Modal.Title>
         </Modal.Header>
@@ -104,8 +103,8 @@ class App extends Component {
             <Form.Control
               type="text"
               name="newCountryName"
-              onChange={ this.handleChange }
-              value={ this.state.newCountryName }
+              onChange={ handleChange }
+              value={ newCountryName }
               autoComplete='off'
               placeholder="enter name"
               autoFocus
@@ -113,17 +112,17 @@ class App extends Component {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="secondary" onClick={this.handleClose}>
+        <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={this.handleAdd}>
+          <Button variant="primary" onClick={handleAdd}>
             Save Changes
           </Button>
         </Modal.Footer>
         {/* <Button onClick={this.toggleShowA} className="mb-2">
             Toggle Toast
           </Button> */}
-          <Toast show={this.state.showA} onClose={this.toggleShowA}>
+          <Toast show={showA} onClose={toggleShowA}>
             <Toast.Header>
               No Country Name Entered
             </Toast.Header>
@@ -134,21 +133,21 @@ class App extends Component {
           <Container fluid>
             <Navbar.Brand>
               Olympic Medals
-              <Badge className="ml-2" bg="light" text="dark" pill>{ this.getAllMedalsTotal() }</Badge>
+              <Badge className="ml-2" bg="light" text="dark" pill>{ getAllMedalsTotal() }</Badge>
             </Navbar.Brand>
-            <Button variant="outline-success" onClick={ this.handleShow }><PlusCircleFill /></Button>{' '}
+            <Button variant="outline-success" onClick={ handleShow }><PlusCircleFill /></Button>{' '}
           </Container>
       </Navbar>
       <Container fluid>
         <Row>
-        { this.state.countries.map(country => 
+        { countries.map(country => 
           <Col className="mt-3" key={ country.id }>
           <Country 
               country={ country } 
-              medals={ this.state.medals }
-              onDelete={ this.handleDelete }
-              onIncrement={ this.handleIncrement } 
-              onDecrement={ this.handleDecrement } />
+              medals={ medals }
+              onDelete={ handleDelete }
+              onIncrement={ handleIncrement } 
+              onDecrement={ handleDecrement } />
           </Col>
         )}
         </Row>
@@ -156,6 +155,6 @@ class App extends Component {
       </React.Fragment>
     );
   }
-}
+// }
  
 export default App;
