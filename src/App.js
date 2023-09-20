@@ -14,16 +14,23 @@ import Modal from 'react-bootstrap/Modal';
 import './App.css';
 import Form from 'react-bootstrap/Form';
 import Toast from 'react-bootstrap/Toast';
+import axios from 'axios';
 
 const App = () => {
   const [ countries, setCountries ] = useState([]);
+  const apiEndpoint = "https://medals-api-6.azurewebsites.net/";
   useEffect(() => {
-  let fetchedCountries = [
-      { id: 1, name: 'United States', gold: 2, silver: 2, bronze: 3 },
-      { id: 2, name: 'China', gold: 3, silver: 1, bronze: 0 },
-      { id: 3, name: 'Germany', gold: 0, silver: 2, bronze: 2 },
-    ];
+  // let fetchedCountries = [
+  //     { id: 1, name: 'United States', gold: 2, silver: 2, bronze: 3 },
+  //     { id: 2, name: 'China', gold: 3, silver: 1, bronze: 0 },
+  //     { id: 3, name: 'Germany', gold: 0, silver: 2, bronze: 2 },
+  //   ];
+  //   setCountries(fetchedCountries);
+  async function fetchData() {
+    const { data: fetchedCountries } = await axios.get(apiEndpoint);
     setCountries(fetchedCountries);
+  }
+  fetchData();
   }, []);
     const medals = useRef([
       { id: 1, name: 'gold' },
@@ -37,8 +44,9 @@ const App = () => {
   const handleChange = (e) => setCountries({ [e.target.name]: e.target.value});
   const handleAdd = (name) => {
     if (newCountryName.length > 0) {
-      const id = countries.length === 0 ? 1 : Math.max(...countries.map(country => country.id)) + 1;
-      setCountries([...countries].concat({ id: id, name: name, gold: 0, silver: 0, bronze: 0 }));
+      // const id = countries.length === 0 ? 1 : Math.max(...countries.map(country => country.id)) + 1;
+      // setCountries([...countries].concat({ id: id, name: name, gold: 0, silver: 0, bronze: 0 }));
+      console.log(`add: ${name}`);
       toggleShowA();
       handleClose();
       
@@ -49,9 +57,10 @@ const App = () => {
     // this.handleClose();
   }
   const handleDelete = (countryId) => {
-    setCountries([...countries].filter(c => c.id !== countryId));
-    // const mutableCountries = [...countries].filter(c => c.id !== countryId);
-    // this.setState({ countries: mutableCountries });
+    // setCountries([...countries].filter(c => c.id !== countryId));
+    // // const mutableCountries = [...countries].filter(c => c.id !== countryId);
+    // // this.setState({ countries: mutableCountries });
+    console.log(`delete: ${countryId}`);
   }
   const handleIncrement = (countryId, medalName) => {
     const idx = countries.findIndex(c => c.id === countryId);
