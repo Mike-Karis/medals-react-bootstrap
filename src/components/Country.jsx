@@ -3,14 +3,24 @@ import Medal from './Medal';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { TrashFill } from 'react-bootstrap-icons';
+import { TrashFill, ArrowClockwise, Save } from 'react-bootstrap-icons';
 
 const Country = (props) => {
-  const { country, medals, onIncrement, onDecrement, onDelete } = props;
+  const { country, medals, onIncrement, onDecrement, onDelete, onSave, onReset } = props;
   const getMedalsTotal = (country, medals) => {
     let sum = 0;
-    medals.forEach(medal => { sum += country[medal.name]; });
+    // use medal count displayed in the web page for medal count totals
+    medals.forEach(medal => { sum += country[medal.name].page_value; });
     return sum;
+  }
+  const renderSaveButton = () => {
+    let unsaved = false;
+    medals.forEach(medal => {
+      if (country[medal.name].page_value !== country[medal.name].saved_value) {
+        unsaved = true;
+      }
+    });
+    return unsaved;
   }
   // render() { 
     
@@ -24,7 +34,17 @@ const Country = (props) => {
               { getMedalsTotal(country, medals) }
             </Badge>
             </span>
+            {/* this will render save/reset buttons if the page/saved medal counts are not equal
+          otherewise, the delete country button will be rendered */}
+          { renderSaveButton() ?
+            <React.Fragment>
+              {/* TODO: use Bootstrap stying / icons */}
+              <Save onClick={ () => onSave(country.id) }>save</Save>
+              <ArrowClockwise onClick={ () => onReset(country.id) }></ArrowClockwise>
+            </React.Fragment>
+            :
             <TrashFill onClick={() => onDelete(country.id)} className='icon-btn' style={{ color:'red' }} />
+          }
           </Card.Title>
           <ListGroup variant="flush">
           { medals.map(medal =>
