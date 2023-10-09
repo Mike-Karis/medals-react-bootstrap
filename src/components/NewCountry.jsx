@@ -1,25 +1,3 @@
-// import React from 'react';
-// import { PlusCircleFill } from 'react-bootstrap-icons';
-
-// const NewCountry = (props) => {
-//   // state = {  }
-//   const {onAdd} = props;
-//   const handleClick = () => {
-//     const name = prompt('Enter country name');
-//     if (name && name.trim().length > 0) {
-//       onAdd(name);
-//     }
-//   }
-//   // render() { 
-//     return (
-//       <div className='newCountryButton'>
-//         <button variant="outline-success" onClick={ handleClick }><PlusCircleFill /></button>
-//       </div>
-//     );
-//   }
-// // }
-
-// export default NewCountry;
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -27,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { PlusCircleFill } from 'react-bootstrap-icons';
+import Nav from 'react-bootstrap/Nav';
 
 const NewCountry = (props) => {
   const [ showModal, setShowModal ] = useState(false);
@@ -46,9 +25,9 @@ const NewCountry = (props) => {
 
   return (
     <React.Fragment>
-      <Button variant="outline-success" onClick={ handleModalShow }>
+      <Nav.Link className="btn" href="#" onClick={ handleModalShow }>
         <PlusCircleFill />
-      </Button>
+        </Nav.Link>
       <Modal onKeyPress={ handleModalKeyPress } show={ showModal } onHide={ handleModalClose }>
         <Modal.Header closeButton>
           <Modal.Title>New Country</Modal.Title>
